@@ -1,0 +1,34 @@
+Sign-in
+    - No account exists
+    - Incorrect password
+
+Appointment Type
+    - Remove Type
+    - Action
+        Dentists: Add note
+        Staff: Complete, Cancel, Reschedule, Confirm
+
+Sign-out
+    - Okay
+
+BookAppointment
+    - No date and time, No dentists. Staff is only allowed to input this on confirmation.
+
+Staff
+    - ConfirmedBooking: Add date, dentist and possible time.
+    - Only Staff can book walk-in Patient. Appointment is confirmed based on aggrement otherwise no.
+      Patient at this stage is recorde already to database but are unable to login.
+      Patient need to register themselves
+
+AppointmentNote
+    - should put author of note. Patient, Staff or Dentist.  
+
+Service
+    - determined after physical checkup. Should not be in booking appointment.
+
+ProfileUpdate
+    - should be written to persistent storage.    
+
+SystemAdminUser
+    - Can only create staff and dentist users.
+    

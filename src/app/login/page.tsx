@@ -1,11 +1,11 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Homepage } from '@/components/Homepage';
+import { LoginForm } from '@/components/LoginForm';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function Home() {
+export default function Login() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
@@ -24,9 +24,9 @@ export default function Home() {
     );
   }
 
-  // Show homepage for non-authenticated users
+  // Show login form for non-authenticated users
   if (!user) {
-    return <Homepage onLoginClick={() => router.push('/login')} />;
+    return <LoginForm />;
   }
 
   // Show loading while redirecting authenticated users
