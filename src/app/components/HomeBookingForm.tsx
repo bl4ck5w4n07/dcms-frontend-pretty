@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-// import { Calendar } from './ui/calendar';
-import { Input } from './ui/input';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { mockServices, mockUsers, timeSlots } from '../data/mockData';
-// import { format } from 'date-fns';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { format } from 'date-fns';
 import { CalendarIcon, CheckCircle } from 'lucide-react';
 import { cn } from './ui/utils';
 
@@ -39,23 +40,51 @@ export const HomeBookingForm: React.FC<HomeBookingFormProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setShowSuccess(true);
-    
-    // Reset form and close after success
-    setTimeout(() => {
-      setShowSuccess(false);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        contact: '',
-        contactType: 'email'
+    try {
+      // Prepare appointment data for Supabase
+      const appointmentData = {
+        patientName: `${formData.firstName} ${formData.lastName}`,
+        patientEmail: formData.contactType === 'email' ? formData.contact : '',
+        patientPhone: formData.contactType === 'phone' ? formData.contact : '',
+        needsStaffConfirmation: true,
+        type: 'booking_request'
+      };
+
+      // Submit to Supabase
+      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-455ee360/appointments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${publicAnonKey}`
+        },
+        body: JSON.stringify(appointmentData)
       });
-      onSuccess();
-    }, 2000);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit appointment');
+      }
+
+      setIsSubmitting(false);
+      setShowSuccess(true);
+      
+      // Reset form and close after success
+      setTimeout(() => {
+        setShowSuccess(false);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          contact: '',
+          contactType: 'email'
+        });
+        onSuccess();
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting appointment:', error);
+      setIsSubmitting(false);
+      // You could add error state here to show error message to user
+      alert('Failed to submit appointment. Please try again or call us directly.');
+    }
   };
 
   // Always show the form now (removed isOpen check)
@@ -137,7 +166,13 @@ export const HomeBookingForm: React.FC<HomeBookingFormProps> = ({
                   required
                 />
               </div>
-            </div>     
+            </div>
+
+            
+
+            
+
+            
 
             <Button type="submit" className="w-full text-lg py-3" size="lg" disabled={isSubmitting}>
               {isSubmitting ? 'Submitting...' : 'Request Appointment'}

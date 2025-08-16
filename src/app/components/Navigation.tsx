@@ -12,7 +12,8 @@ import {
   LogOut,
   Home,
   UserPlus,
-  User
+  User,
+  Shield
 } from 'lucide-react';
 
 interface NavigationProps {
@@ -21,7 +22,7 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection }) => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const router = useRouter();
 
   // Define menu items based on user role
@@ -36,26 +37,32 @@ export const Navigation: React.FC<NavigationProps> = ({ activeSection, setActive
       case 'patient':
         return [
           ...baseItems,
-          { id: 'book-appointment', label: 'Book Appointment', icon: PlusCircle },
-          { id: 'my-profile', label: 'My Profile', icon: User }
+          { id: 'appointments', label: 'My Appointments', icon: Calendar },
+          { id: 'profile', label: 'My Profile', icon: User }
         ];
         
       case 'dentist':
+        return [
+          ...baseItems,
+          { id: 'appointments', label: 'Appointments', icon: Calendar },
+          { id: 'patients', label: 'Patient Records', icon: Users },
+          { id: 'profile', label: 'My Profile', icon: User }
+        ];
+        
       case 'admin':
         return [
           ...baseItems,
-          { id: 'book-appointment', label: 'Book Appointment', icon: PlusCircle },
-          { id: 'walk-in-patient', label: 'Walk-in Patient', icon: UserPlus },
-          { id: 'appointments', label: 'All Appointments', icon: Calendar },
-          { id: 'patients', label: 'Patient Records', icon: Users }
+          { id: 'appointments', label: 'Appointments', icon: Calendar },
+          { id: 'patients', label: 'Patient Records', icon: Users },
+          { id: 'admin/users', label: 'User Management', icon: Shield },
+          { id: 'profile', label: 'My Profile', icon: User }
         ];
         
       default: // staff
         return [
           ...baseItems,
-          { id: 'book-appointment', label: 'Book Appointment', icon: PlusCircle },
-          { id: 'walk-in-patient', label: 'Walk-in Patient', icon: UserPlus },
-          { id: 'appointments', label: 'Appointments', icon: Calendar }
+          { id: 'appointments', label: 'Appointments', icon: Calendar },
+          { id: 'profile', label: 'My Profile', icon: User }
         ];
     }
   };
@@ -98,7 +105,7 @@ export const Navigation: React.FC<NavigationProps> = ({ activeSection, setActive
           variant="outline"
           className="w-full justify-start"
           onClick={() => {
-            logout();
+            signOut();
             router.push('/');
           }}
         >

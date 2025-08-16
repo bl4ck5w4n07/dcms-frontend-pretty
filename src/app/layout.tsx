@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { AuthProvider } from '@/contexts/AuthContext';
-import '@/globals.css';
+import { AuthProvider } from './contexts/AuthContext';
+import { Toaster } from './components/ui/sonner';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'SmileCare Dental - Modern Dental Clinic Management',
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           {children}
+          <Toaster />
         </AuthProvider>
       </body>
     </html>
